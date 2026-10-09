@@ -1,0 +1,12 @@
+{
+  "name": "tera-airdrop",
+  "version": "1.0.0",
+  "description": "TERA Airdrop Website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

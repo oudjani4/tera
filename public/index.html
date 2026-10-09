@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إيردروب TERA</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e1b4b);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 450px;
+            width: 100%;
+            background: rgba(30, 41, 59, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+        .logo-container {
+            width: 80px; height: 80px; margin: 0 auto 15px auto;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: bold;
+        }
+        h1 { font-size: 22px; margin-bottom: 8px; }
+        p { color: #94a3b8; font-size: 13px; margin-bottom: 15px; }
+        .task-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px; border-radius: 10px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center; text-align: right;
+        }
+        .task-info h4 { font-size: 14px; }
+        .task-info span { font-size: 11px; color: #38bdf8; }
+        .task-btn {
+            background: #3b82f6; color: white; border: none;
+            padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;
+        }
+        .task-btn.completed { background: #10b981; }
+        .btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white; border: none; padding: 14px 20px; margin-top: 15px;
+            border-radius: 12px; cursor: pointer; font-size: 16px; width: 100%;
+            opacity: 0.5; pointer-events: none;
+        }
+        .btn.active { opacity: 1; pointer-events: auto; }
+        .status { margin-top: 10px; font-size: 12px; color: #38bdf8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">TERA</div>
+        <h1>مهام إيردروب TERA</h1>
+        <p>أتمم المهام للحصول على 100 TERA مجاناً.</p>
+        
+        <div class="task-card">
+            <div class="task-info">
+                <h4>انضم لقناة التيليجرام</h4>
+                <span>+50 TERA</span>
+            </div>
+            <button class="task-btn" id="task1-btn" onclick="completeTask(1)">إتمام</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-info">
+                <h4>تابعنا على إكس</h4>
+                <span>+50 TERA</span>
+            </div>
+            <button class="task-btn" id="task2-btn" onclick="completeTask(2)">إتمام</button>
+        </div>
+
+        <button class="btn" id="claim-btn" onclick="claimReward()">استلام 100 TERA</button>
+        <div class="status" id="status-text">أتمم المهام أولاً</div>
+    </div>
+
+    <script>
+        let tasksCompleted = { 1: false, 2: false };
+        function completeTask(n) {
+            window.open('https://t.me/', '_blank');
+            setTimeout(() => {
+                tasksCompleted[n] = true;
+                const btn = document.getElementById(`task${n}-btn`);
+                btn.innerText = "تم ✅";
+                btn.classList.add('completed');
+                btn.disabled = true;
+                if(tasksCompleted[1] && tasksCompleted[2]) {
+                    document.getElementById('claim-btn').classList.add('active');
+                    document.getElementById('status-text').innerText = "جاهز للاستلام!";
+                }
+            }, 1000);
+        }
+        async function claimReward() {
+            const wallet = "UQ" + Math.random().toString(36).substring(2, 15);
+            const res = await fetch('/api/claim', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ walletAddress: wallet, tasksCompleted })
+            });
+            const data = await res.json();
+            alert(data.message);
+            if(data.success) {
+                document.getElementById('claim-btn').disabled = true;
+                document.getElementById('claim-btn').innerText = "تم الاستلام بنجاح";
+            }
+        }
+    </script>
+</body>
+</html>
